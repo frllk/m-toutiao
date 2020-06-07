@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import { userGetInfo } from '@/api/user.js'
 export default {
   name: 'Layout',
   props: [],
@@ -14,7 +15,9 @@ export default {
 
   },
   computed: {},
-  created () {},
+  async created () {
+    await userGetInfo()
+  },
   mounted () {}
 }
 </script>
