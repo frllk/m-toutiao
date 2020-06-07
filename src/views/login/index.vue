@@ -55,10 +55,17 @@ export default {
   methods: {
     async hLogin () {
       try {
+        // 发送请求之前加loading
+        this.$toast.loading({
+          message: '登录中......',
+          mask: true, // 是否显示遮罩层
+          duration: 0 // 0：持续展示 toast
+        })
         const res = await userLogin(this.userInfo)
         console.log(res)
         // 登录成功保存token信息到vuex，并跳转到主页
         this.$store.commit('mSetTokenInfo', res.data.data)
+        // ---ajax结束之后，取消loading：用一个新的提示来覆盖之前的loading，这样相当于达到了loading的效果
         this.$toast.success('登录成功')
         this.$router.push('/')
       } catch (err) {
