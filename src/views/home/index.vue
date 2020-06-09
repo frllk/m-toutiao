@@ -2,7 +2,7 @@
   <div class='index'>
     <van-tabs>
       <van-tab v-for="(item,idx) in channels" :key="idx" :title="item.name">
-        <article-list></article-list>
+        <article-list :channel="item"></article-list>
       </van-tab>
     </van-tabs>
   </div>

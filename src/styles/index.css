@@ -51,3 +51,6 @@
 .index .van-tabs--line {
   padding-top: 50px;
 }
+.index .van-tabs__content {
+  padding-bottom: 150px;
+}
