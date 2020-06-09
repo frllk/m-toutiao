@@ -4,12 +4,13 @@
       title="黑马头条"
       right-text="搜索"
       left-arrow
+      fixed
       @click-left="$router.push('/login')"
       @click-right="$router.push('/search')"
     />
     <!-- 二级路由入口 -->
     <router-view></router-view>
-    <van-tabbar>
+    <van-tabbar route>
     <van-tabbar-item to="/" icon="home-o">首页</van-tabbar-item>
     <van-tabbar-item to="/question" icon="chat-o">问答</van-tabbar-item>
     <van-tabbar-item to="/video" icon="video-o">视频</van-tabbar-item>

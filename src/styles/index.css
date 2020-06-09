@@ -8,3 +8,46 @@
 .van-nav-bar .van-icon {
   color: #fff;
 }
+#app {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+.container {
+  width: 100%;
+  height: 100%;
+}
+.index {
+  height: 100%;
+}
+.index .van-tabs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.index .van-tabs .van-tabs__content {
+  flex: 1;
+  overflow: hidden;
+}
+.index .van-tab__pane {
+  height: 100%;
+}
+.index .scroll-wrapper {
+  overflow: auto;
+  height: 100%;
+}
+.index {
+  padding-top: 46px;
+}
+.index .van-tabs__wrap {
+  position: fixed;
+  top: 46px;
+  left: 0px;
+  right: 0px;
+}
+.index .van-tabs--line {
+  padding-top: 50px;
+}

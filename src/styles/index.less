@@ -10,3 +10,55 @@
     color: #fff;
   }
 }
+
+#app{
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+// .container是Layout.vue组件的根元素的类名
+.container{
+  width: 100%;
+  height: 100%;
+}
+
+// .index 是home/index.vue组件的根元素的类名
+.index {
+  height: 100%;
+  .van-tabs {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      .van-tabs__content {
+          flex:1;
+          overflow: hidden;
+      }
+  }
+  .van-tab__pane{
+      height: 100%;
+  }
+  // .scroll-wrapper是home/ArticleList.vue组件的根元素的类名
+  .scroll-wrapper{
+      overflow:auto;
+      height: 100%;
+  }
+}
+
+// 主页
+.index{
+  // 让出顶部导航条的距离
+  padding-top:46px;
+  .van-tabs__wrap {
+    position:fixed;
+    top:46px;
+    left:0px;
+    right:0px;
+  }
+  // 让出van-tabs的高度
+  .van-tabs--line{
+      padding-top:50px; 
+  }
+}
