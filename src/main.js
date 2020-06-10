@@ -19,6 +19,15 @@ Vue.use(Lazyload)
 // 时间处理
 Vue.filter('relativeTime', relativeTime)
 
+// 事件总线
+// Vue是一个构造器，它有一个原型对象prototype
+// Vue.prototype.$eventBus 给Vue的原型对象补充一个名为$eventBus的属性
+//      属性名是$eventBus，值是一个全新的Vue的实例：用它当做事件对象
+
+// 如果给prototype上添加属性，则所有的实例都拥有$eventBus这个属性
+// 也就是所有的组件（组件也是Vue的实例）中都可以访问this$eventBus
+Vue.prototype.$eventBus = new Vue()
+
 Vue.config.productionTip = false
 
 new Vue({

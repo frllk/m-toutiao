@@ -1,6 +1,7 @@
 <template>
   <div class='index'>
-    <van-tabs>
+    <!-- 通过v-model绑定当前激活标签对应的索引值，默认情况下启用第一个标签 -->
+    <van-tabs v-model="activeIndex">
       <van-tab v-for="(item,idx) in channels" :key="idx" :title="item.name">
         <article-list @showMoreAction="hShowMoreAction" :channel="item"></article-list>
         <van-popup v-model="show" :style="{ width: '80%' }" >
@@ -22,6 +23,7 @@ export default {
   components: { ArticleList, MoreAction },
   data () {
     return {
+      activeIndex: 0, // 当前激活标签对应的索引值
       articleId: 0, // 文章id
       show: false, // 是否显示弹层
       channels: [] // 频道列表
@@ -46,6 +48,12 @@ export default {
         // 2、关闭弹层
         this.show = false
         // 3、删除本地数据
+        // 事件总线处理本地数据删除
+        const obj = {
+          articleId: this.articleId,
+          channelId: this.channels[this.activeIndex].id
+        }
+        this.$eventBus.$emit('delArticle', obj)
       } catch (err) {
         console.log(err)
       }

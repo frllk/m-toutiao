@@ -127,6 +127,20 @@ export default {
     }
   },
   created () {
+    this.$eventBus.$on('delArticle', obj => {
+      // console.log(obj)
+      const { articleId, channelId } = obj
+      if (this.channel.id !== channelId) {
+        console.log('频道不同，与我无关===', channelId)
+        return
+      }
+      console.log('在list中找出===', articleId)
+      // 1、找出索引  2、找到下标之后,删除对应文章
+      const idx = this.list.findIndex(item => item.art_id.toString() === articleId)
+      if (idx !== -1) {
+        this.list.splice(idx, 1)
+      }
+    })
   }
 }
 </script>
