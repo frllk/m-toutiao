@@ -6,9 +6,23 @@
  */
 import store from '@/store/index.js'
 import axios from 'axios'
+import JSONBig from 'json-bigint'
+
 // 一个项目可能有多个基地址，所以用create方式创建axios实例
 const instance1 = axios.create({
-  baseURL: 'http://ttapi.research.itcast.cn'
+  baseURL: 'http://ttapi.research.itcast.cn',
+  // 处理请求返回的数据
+  transformResponse: [function (data) {
+    // 对 data 进行任意转换处理
+    try {
+      // 如果没有遇到错误，就返回 JSONbig处理之后的数据
+      return data ? JSONBig.parse(data) : {}
+    } catch (err) {
+      console.log(data)
+      console.log('JSONbig转换出错', err)
+      return data
+    }
+  }]
 })
 
 const instance2 = axios.create({

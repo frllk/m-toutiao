@@ -37,6 +37,7 @@
             <span>{{item.aut_name}}</span>
             <span>{{item.comm_count}}评论</span>
             <span>{{item.pubdate | relativeTime}}</span>
+            <span class="close" @click="hClose(item)" v-if="$store.state.tokenInfo.token"><van-icon name="close" /></span>
           </div>
         </div>
       </van-cell>
@@ -85,7 +86,7 @@ export default {
     // 2、手动上拉
     async onLoad () {
       try {
-        console.log('当前数据的条数', this.list.length, '加载新数据')
+        // console.log('当前数据的条数', this.list.length, '加载新数据')
         if (!this.timestamp) {
           this.timestamp = Date.now()
         }
@@ -120,6 +121,9 @@ export default {
       //     this.finished = true
       //   }
       // }, 1000)
+    },
+    hClose (article) {
+      this.$emit('showMoreAction', article.art_id.toString())
     }
   },
   created () {
@@ -129,8 +133,15 @@ export default {
 
 <style scoped lang='less'>
 .meta {
+  display: flex;
   span{
     margin-right: 10px;
+  }
+  .close{
+    // 让它在最右边
+    // 它的父级容器是flex的，给当前元素设置左外边距为auto，会让这个元素在父级容器
+    // 的最右边
+    margin-left:auto;
   }
 }
 </style>
