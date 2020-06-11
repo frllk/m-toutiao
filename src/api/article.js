@@ -30,3 +30,19 @@ export const dislikeArticle = articleId => ajax({
     target: articleId
   }
 })
+
+/**
+ * 举报文章
+ * @param {*} articleId 文章id
+ * @param {*} type 举报类型
+ * @param {*} remark 其他文字说明
+ */
+export const reportArticle = (articleId, type, remark = '') => ajax({
+  method: 'POST',
+  url: '/app/v1_0/article/reports',
+  data: {
+    target: articleId,
+    type,
+    remark
+  }
+})
