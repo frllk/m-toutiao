@@ -16,7 +16,7 @@
     <div class="channel">
       <van-cell title="可选频道" :border="false"></van-cell>
       <van-grid>
-        <van-grid-item v-for="item in mRecommendChannels" :key="item.id">
+        <van-grid-item @click="hAddChannel(item)" v-for="item in mRecommendChannels" :key="item.id">
           <span>{{item.name}}</span>
         </van-grid-item>
       </van-grid>
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { getAllChannels } from '@/api/channels.js'
+import { getAllChannels, addChannel } from '@/api/channels.js'
 export default {
   name: 'ChannelEdit',
   props: ['channels', 'activeIndex'],
@@ -35,6 +35,31 @@ export default {
     }
   },
   methods: {
+    // 用户在推荐频道上点击了某一项
+    async hAddChannel (channel) {
+      try {
+        let curChannels = [...this.channels, channel]
+        curChannels.splice(0, 1)
+        // 组装数据，改造成接口参数要求的格式
+        curChannels = curChannels.map((item, idx) => {
+          return { id: item.id, seq: idx }
+        })
+        console.log(curChannels)
+        // 1、调用接口
+        await addChannel(curChannels)
+        // 2、更新视图：修改已订阅的频道
+        // 直接在channels的后面添加当前这一项
+        this.channels.push(channel)
+        // (1) 它给 我的频道中添加了 一项。导致视图的变化。
+        // (2) 由于可选频道是一个计算属性，所以 我的频道 多了一次，则可选频道就会少一项。
+        // (3) 它会直接修改父组件中的频道列表。
+        //     原因：父组件把channels当作prop传入的。由于这个prop的值是一个数组，它是一个引用数据类型。
+        //          所以在子组件中修改会直接影响到父组件中的数据。
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 我的订阅  点击频道
     async hClickMyChannel (channel) {
       try {
         // 1、关闭弹层  2、父组件显示当前点击频道
@@ -60,8 +85,10 @@ export default {
     mRecommendChannels () {
       // allChannels - channels   全部频道 - 我的频道
       const arr = this.allChannels.filter(item => {
-        const idx = this.channels.findIndex(channel => channel.id !== item.id)
-        return idx !== -1
+        // 只保留  没有在  已订阅的频道中出现的频道
+        const idx = this.channels.findIndex(channel => channel.id === item.id)
+        // 如果找到，idx肯定不是-1 如果找不到，idx就是-1
+        return idx === -1
       })
       return arr
     }
