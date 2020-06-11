@@ -31,3 +31,15 @@ export const addChannel = channels => ajax({
     channels
   }
 })
+
+/**
+ * 删除频道
+ * @param {*} channels 频道信息
+ */
+export const delChannel = channels => ajax({
+  method: 'delete',
+  url: '/app/v1_0/user/channels',
+  data: {
+    channels
+  }
+})

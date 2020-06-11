@@ -3,12 +3,12 @@
     <!-- 当前登陆用户已经订阅的频道 -->
     <div class="channel">
       <van-cell title="我的频道" :border="false">
-          <van-button  size="mini" type="info">编辑</van-button>
+          <van-button @click="editing=!editing" size="mini" type="info">{{editing?'完成':'编辑'}}</van-button>
       </van-cell>
       <van-grid>
         <van-grid-item @click="hClickMyChannel(item)" v-for="(item,idx) in channels" :key="item.id">
           <span :class="{cur: activeIndex===idx}">{{item.name}}</span>
-          <!-- <van-icon name="cross" class="btn" size="10"></van-icon> -->
+          <van-icon v-show="editing" name="cross" class="btn" size="10"></van-icon>
         </van-grid-item>
       </van-grid>
     </div>
@@ -25,13 +25,14 @@
 </template>
 
 <script>
-import { getAllChannels, addChannel } from '@/api/channels.js'
+import { getAllChannels, addChannel, delChannel } from '@/api/channels.js'
 export default {
   name: 'ChannelEdit',
   props: ['channels', 'activeIndex'],
   data () {
     return {
-      allChannels: []
+      allChannels: [],
+      editing: false // 是否编辑状态
     }
   },
   methods: {
@@ -62,9 +63,21 @@ export default {
     // 我的订阅  点击频道
     async hClickMyChannel (channel) {
       try {
-        // 1、关闭弹层  2、父组件显示当前点击频道
-        this.$emit('updateCurChannel', channel)
-        this.$emit('close')
+        if (this.editing) {
+          // 0、推荐频道不能删除
+          if (channel.id === 0) {
+            return
+          }
+          // 1、删除频道
+          await delChannel([channel.id])
+          // 2、更新视图
+          const idx = this.channels.findIndex(item => item.id === channel.id)
+          this.channels.splice(idx, 1)
+        } else {
+          // 1、关闭弹层  2、父组件显示当前点击频道
+          this.$emit('updateCurChannel', channel)
+          this.$emit('close')
+        }
       } catch (error) {
         console.log(error)
       }
