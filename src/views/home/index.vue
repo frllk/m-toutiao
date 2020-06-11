@@ -6,8 +6,17 @@
         <article-list @showMoreAction="hShowMoreAction" :channel="item"></article-list>
       </van-tab>
     </van-tabs>
+    <!-- 频道列表 开关 通过定位 -->
+    <div class="bar-btn">
+        <van-icon @click="showChannelEdit=!showChannelEdit" name="wap-nav" size="24" />
+    </div>
+    <!-- 更多操作 -->
     <van-popup v-model="show" :style="{ width: '80%' }" >
       <more-action ref="refMoreAction" @dislike="hDislike" @report="hReport"></more-action>
+    </van-popup>
+    <!-- 频道组件 -->
+    <van-popup v-model="showChannelEdit" :style="{ width: '80%' }" >
+      <channel-edit :channels="channels"></channel-edit>
     </van-popup>
   </div>
 </template>
@@ -15,14 +24,16 @@
 <script>
 import ArticleList from '@/views/home/articleList'
 import MoreAction from '@/views/home/moreAction'
+import channelEdit from '@/views/home/channelEdit'
 import { getChannels } from '@/api/channels.js'
 import { dislikeArticle, reportArticle } from '@/api/article.js'
 export default {
   name: 'Home',
   props: [],
-  components: { ArticleList, MoreAction },
+  components: { ArticleList, MoreAction, channelEdit },
   data () {
     return {
+      showChannelEdit: false, // 是否显示频道组件
       activeIndex: 0, // 当前激活标签对应的索引值
       articleId: 0, // 文章id
       show: false, // 是否显示弹层 (更多操作)
@@ -30,6 +41,7 @@ export default {
     }
   },
   methods: {
+    // 举报文章
     async hReport (reportTypeId) {
       try {
         // 1、发送请求

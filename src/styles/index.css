@@ -46,11 +46,21 @@
   position: fixed;
   top: 46px;
   left: 0px;
-  right: 0px;
+  right: 30px;
 }
 .index .van-tabs--line {
   padding-top: 50px;
 }
 .index .van-tabs__content {
   padding-bottom: 150px;
+}
+.index .bar-btn {
+  position: fixed;
+  right: 5px;
+  top: 52px;
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  opacity: 0.8;
+  z-index: 1;
 }
