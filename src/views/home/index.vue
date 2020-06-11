@@ -16,7 +16,11 @@
     </van-popup>
     <!-- 频道组件 -->
     <van-popup v-model="showChannelEdit" :style="{ width: '80%' }" >
-      <channel-edit :channels="channels"></channel-edit>
+      <channel-edit
+      :channels="channels"
+      :activeIndex="activeIndex"
+      @updateCurChannel="hUpdateCurChannel"
+      @close="hClose"></channel-edit>
     </van-popup>
   </div>
 </template>
@@ -41,6 +45,13 @@ export default {
     }
   },
   methods: {
+    hClose () {
+      this.showChannelEdit = false
+    },
+    hUpdateCurChannel (channel) {
+      // console.log(channel)
+      this.activeIndex = this.channels.findIndex(item => item.id === channel.id)
+    },
     // 举报文章
     async hReport (reportTypeId) {
       try {

@@ -6,8 +6,8 @@
           <van-button  size="mini" type="info">编辑</van-button>
       </van-cell>
       <van-grid>
-        <van-grid-item v-for="item in channels" :key="item.id">
-          <span>{{item.name}}</span>
+        <van-grid-item @click="hClickMyChannel(item)" v-for="(item,idx) in channels" :key="item.id">
+          <span :class="{cur: activeIndex===idx}">{{item.name}}</span>
           <!-- <van-icon name="cross" class="btn" size="10"></van-icon> -->
         </van-grid-item>
       </van-grid>
@@ -28,13 +28,22 @@
 import { getAllChannels } from '@/api/channels.js'
 export default {
   name: 'ChannelEdit',
-  props: ['channels'],
+  props: ['channels', 'activeIndex'],
   data () {
     return {
       allChannels: []
     }
   },
   methods: {
+    async hClickMyChannel (channel) {
+      try {
+        // 1、关闭弹层  2、父组件显示当前点击频道
+        this.$emit('updateCurChannel', channel)
+        this.$emit('close')
+      } catch (error) {
+        console.log(error)
+      }
+    },
     async loadAllChannels () {
       try {
         const res = await getAllChannels()
@@ -70,5 +79,8 @@ export default {
     top: 0;
     right: 0;
     font-size: 24px;
-}
+  }
+  .cur {
+    color: red;
+  }
 </style>
