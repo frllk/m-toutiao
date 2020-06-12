@@ -37,7 +37,7 @@ export default {
   name: 'Search',
   data () {
     return {
-      history: getItem(LOCALSTROAGE_SEARCH_NAME) || [], // 搜索 历史记录
+      history: getItem(LOCALSTROAGE_SEARCH_NAME) || [], // 搜索 历史记录 初始值设置：先从本地数据获取，如果没有则为[]
       suggestion: [],
       keyword: '' // 搜索关键字
     }
