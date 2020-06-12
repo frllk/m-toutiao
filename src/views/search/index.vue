@@ -44,7 +44,7 @@ export default {
   methods: {
     async hSuggestion () {
       try {
-        if (this.keyword) {
+        if (!this.keyword) {
           this.suggestion = []
           return
         }
