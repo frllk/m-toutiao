@@ -12,7 +12,9 @@
 
     <!-- 联想建议 -->
     <van-cell-group>
-      <van-cell v-for="(item, idx) in suggestion" :key="idx" :title="item" icon="search" />
+      <van-cell v-for="(item, idx) in mSuggestions" :key="idx" icon="search">
+        <div v-html="item"></div>
+      </van-cell>
     </van-cell-group>
     <!-- /联想建议 -->
 
@@ -53,6 +55,11 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    }
+  },
+  computed: {
+    mSuggestions () {
+      return this.suggestion.map(item => item.replace(new RegExp(this.keyword, 'gi'), `<span style="color:red">${this.keyword}</span>`))
     }
   }
 }
