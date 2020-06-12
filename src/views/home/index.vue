@@ -20,6 +20,7 @@
       :channels="channels"
       :activeIndex="activeIndex"
       @updateCurChannel="hUpdateCurChannel"
+      @updateCurrIndex="hUpdateCurrIndex"
       @close="hClose"></channel-edit>
     </van-popup>
   </div>
@@ -45,6 +46,9 @@ export default {
     }
   },
   methods: {
+    hUpdateCurrIndex (index) {
+      this.activeIndex = index
+    },
     hClose () {
       this.showChannelEdit = false
     },

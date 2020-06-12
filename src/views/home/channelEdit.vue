@@ -73,6 +73,10 @@ export default {
           // 2、更新视图
           const idx = this.channels.findIndex(item => item.id === channel.id)
           this.channels.splice(idx, 1)
+          // 3、如果当前删除的频道在 此时的活动频道之前，则要更相信一下父组件中的活动频道的值
+          if (idx < this.activeIndex) {
+            this.$emit('updateCurrIndex', this.activeIndex - 1)
+          }
         } else {
           // 1、关闭弹层  2、父组件显示当前点击频道
           this.$emit('updateCurChannel', channel)
