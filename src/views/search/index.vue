@@ -44,6 +44,10 @@ export default {
   methods: {
     async hSuggestion () {
       try {
+        if (this.keyword) {
+          this.suggestion = []
+          return
+        }
         const res = await getSuggestion(this.keyword)
         this.suggestion = res.data.data.options
       } catch (error) {
