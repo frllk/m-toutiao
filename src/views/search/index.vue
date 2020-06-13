@@ -5,7 +5,7 @@
     <van-search
       show-action
       placeholder="请输入搜索关键词" shape="round" v-model.trim="keyword"
-      @input="hSuggestion"
+      @input="hGetSuggestion_with_throttle"
       >
       <div slot="action" @click="hSearch">搜索</div>
     </van-search>
@@ -32,17 +32,48 @@
 import { getItem, setItem } from '@/utils/storage'
 import { getSuggestion } from '@/api/search.js'
 const LOCALSTROAGE_SEARCH_NAME = 'searchHistory'
-console.log(getItem(LOCALSTROAGE_SEARCH_NAME))
+
 export default {
   name: 'Search',
   data () {
     return {
+      timer: null, // 定时器
       history: getItem(LOCALSTROAGE_SEARCH_NAME) || [], // 搜索 历史记录 初始值设置：先从本地数据获取，如果没有则为[]
       suggestion: [],
       keyword: '' // 搜索关键字
     }
   },
   methods: {
+    /**
+     * 搜索优化：
+     * 防抖：可能就执行第一次调用和最后一次调用
+     * 节流：会执行多次，只是频率降低了
+     */
+    // 防抖：
+    hGetSuggestion_with_anti_shake () {
+      // 以间隔2s为例，如果在2s之内,在当前时间点在加2s
+      if (this.timer) {
+        clearTimeout(this.timer)
+      }
+      this.timer = setTimeout(() => {
+        console.log('防抖', this.keyword)
+        this.hSuggestion()
+      }, 0.5 * 1000)
+    },
+    // 节流
+    hGetSuggestion_with_throttle () {
+      // 以间隔2s为例
+      // 如果这个函数距离上一次被调用的时间之间相隔不到2s，则本次调用不执行代码
+      //  只有this.timer是null，才会去开启下一个定时器
+      console.log(Date.now(), '关键字变了', this.keyword)
+      if (!this.timer) {
+        this.timer = setTimeout(() => {
+          this.timer = null
+          console.log('节流', this.keyword)
+          this.hSuggestion()
+        }, 0.5 * 1000)
+      }
+    },
     // 删除历史记录
     hDelHistory (idx) {
       this.history.splice(idx, 1)
