@@ -31,6 +31,7 @@
 <script>
 import { getItem, setItem } from '@/utils/storage'
 import { getSuggestion } from '@/api/search.js'
+// 代码简洁之道： 消除  魔术数
 const LOCALSTROAGE_SEARCH_NAME = 'searchHistory'
 
 export default {
