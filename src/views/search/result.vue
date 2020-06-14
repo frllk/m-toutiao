@@ -19,8 +19,8 @@
     >
       <van-cell
         v-for="item in list"
-        :key="item"
-        :title="item"
+        :key="item.art_id"
+        :title="item.title"
       />
     </van-list>
     <!-- /文章列表 -->
@@ -28,31 +28,47 @@
 </template>
 
 <script>
+import { getSearchs } from '@/api/search'
 export default {
   name: 'SearchResult',
   data () {
     return {
       list: [],
       loading: false,
-      finished: false
+      finished: false,
+      page: 1
     }
   },
 
   methods: {
-    onLoad () {
-      // 异步更新数据
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1)
-        }
-        // 加载状态结束
+    async onLoad () {
+      try {
+        // 1、发送请求  2、加载状态结束   3、数据全部加载完成   4、更新页码
+        const result = await getSearchs(this.$route.query.keyword, this.page)
+        this.list.push(...result.data.data.results)
         this.loading = false
-
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
+        if (result.data.data.results.length === 0) {
           this.finished = true
         }
-      }, 500)
+        this.page++
+      } catch (error) {
+        console.log(error)
+        this.$toast.fail('获取数据失败!')
+      }
+
+      // // 异步更新数据
+      // setTimeout(() => {
+      //   for (let i = 0; i < 10; i++) {
+      //     this.list.push(this.list.length + 1)
+      //   }
+      //   // 加载状态结束
+      //   this.loading = false
+
+      //   // 数据全部加载完成
+      //   if (this.list.length >= 40) {
+      //     this.finished = true
+      //   }
+      // }, 500)
     }
   }
 }

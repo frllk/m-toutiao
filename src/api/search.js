@@ -16,3 +16,19 @@ export const getSuggestion = keyword => {
     }
   })
 }
+
+/**
+ * 获取搜索结果
+ * @param {*} keyword 搜索关键字
+ * @param {*} page 页码
+ */
+export const getSearchs = (keyword, page) => {
+  return ajax({
+    method: 'get',
+    url: '/app/v1_0/search',
+    params: {
+      q: keyword,
+      page
+    }
+  })
+}
