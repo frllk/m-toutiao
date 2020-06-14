@@ -39,13 +39,16 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         <van-button round size="small" hairline type="danger" plain @click="hSwitchDisLike" icon="delete">{{article.attitude === 0?'取消不喜欢':'不喜欢'}}</van-button>
       </div>
+      <!-- 文章回复 -->
+      <article-comment :articleId='$route.params.id'></article-comment>
+      <!-- /文章回复 -->
     </div>
     <!-- /文章详情 -->
-
   </div>
 </template>
 
 <script>
+import articleComment from './comment'
 import { getArticleInfo, addLike, deleteLike, addDisLike, deleteDisLike } from '@/api/article'
 import { followUser, unFollowUser } from '@/api/user'
 export default {
@@ -57,6 +60,7 @@ export default {
       is404: false
     }
   },
+  components: { articleComment },
   methods: {
     // 关注/取消关注
     async hSwitchFollow () {
