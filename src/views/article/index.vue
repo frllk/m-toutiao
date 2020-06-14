@@ -12,7 +12,9 @@
     <!-- 加载中 loading -->
     <van-loading v-if="loading" class="article-loading" />
     <!-- /加载中 loading -->
-
+    <div class="error"  v-if="is404">
+      文章不见了~~~
+    </div>
     <!-- 文章详情 -->
     <div class="detail" v-else>
       <h3 class="title">{{article.title}}</h3>
@@ -51,7 +53,8 @@ export default {
   data () {
     return {
       loading: true, // 控制加载中的 loading 状态
-      article: { }
+      article: { },
+      is404: false
     }
   },
   methods: {
@@ -117,7 +120,11 @@ export default {
         this.article = result.data.data
         this.loading = false
       } catch (error) {
-        console.log(error)
+        console.dir(error)
+        if (error && error.response && error.response.status === 404) {
+          this.is404 = true
+          this.loading = false
+        }
       }
     }
   },
