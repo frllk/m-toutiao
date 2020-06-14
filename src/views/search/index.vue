@@ -20,8 +20,8 @@
 
     <!-- 搜索历史记录 -->
     <van-cell-group v-else>
-      <van-cell v-for="(item, idx) in history" :key="idx" :title="item">
-        <van-icon @click="hDelHistory(idx)" name="cross" />
+      <van-cell v-for="(item, idx) in history" :key="idx" :title="item" @click="$router.push('/search/result?keyword='+item)">
+        <van-icon @click.stop="hDelHistory(idx)" name="cross" />
       </van-cell>
     </van-cell-group>
     <!-- /搜索历史记录 -->
@@ -82,6 +82,9 @@ export default {
     },
     // 点击搜索
     hSearch () {
+      if (!this.keyword) {
+        return
+      }
       this.addHistory(this.keyword)
     },
     // 点击搜索联想建议
@@ -99,6 +102,8 @@ export default {
       }
       this.history.unshift(str)
       setItem(LOCALSTROAGE_SEARCH_NAME, this.history)
+      // 跳转到文章详情
+      this.$router.push({ path: '/search/result', query: { keyword: str } })
     },
     async hSuggestion () {
       try {
