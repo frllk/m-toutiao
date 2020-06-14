@@ -21,6 +21,7 @@
         v-for="item in list"
         :key="item.art_id"
         :title="item.title"
+        @click="$router.push('/article/'+item.art_id.toString())"
       />
     </van-list>
     <!-- /文章列表 -->

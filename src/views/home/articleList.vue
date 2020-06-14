@@ -21,7 +21,7 @@
       >
       <!-- title  自定义左侧 title 的内容
       label 自定义标题下方 label 的内容 -->
-      <van-cell v-for="(item, idx) in list" :key="idx" :title="item.title">
+      <van-cell @click="$router.push('/article/'+item.art_id.toString())" v-for="(item, idx) in list" :key="idx" :title="item.title">
         <div slot="label">
           <!-- 图文.... -->
           <!-- 图片 van-grid

@@ -23,7 +23,7 @@ const routes = [
   { path: '/user/chat', component: () => import('@/views/user/chat.vue') }, // 小智同学
   { path: '/search', component: () => import('@/views/search') }, // 搜索中心
   { path: '/search/result', component: () => import('@/views/search/result') }, // 搜索结果
-  { path: '/article', component: () => import('@/views/article') } // 文章详情
+  { path: '/article/:id', component: () => import('@/views/article') } // 文章详情
   // {
   //   path: '/about',
   //   name: 'About',
