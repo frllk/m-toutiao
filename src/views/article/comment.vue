@@ -24,7 +24,7 @@
           <p style="color: #363636;">{{item.content}}</p>
           <p>
             <span style="margin-right: 10px;">{{item.pubdata|relativeTime}}</span>
-            <van-button size="mini" type="default" @click="hReply">回复</van-button>
+            <van-button size="mini" type="default" @click="hReply(item)">回复</van-button>
           </p>
         </div>
         <van-icon slot="right-icon" :name="item.is_liking?'like':'like-o'" @click="hSwitchLike(item)" />
@@ -43,10 +43,21 @@
       </van-field>
     </van-cell-group>
     <!-- /发布评论 -->
+    <!-- 评论回复 -->
+    <van-popup
+      v-model="isReplyShow"
+      round
+      position="bottom"
+      :style="{height:'85%'}"
+    >
+      <comment-reply :comment="currComment" :articleId="articleId"></comment-reply>
+    </van-popup>
+     <!-- 评论回复 -->
   </div>
 </template>
 
 <script>
+import commentReply from './commentReply'
 import { getComments, addComment, addCommentLike, deleteCommentLike } from '@/api/comment'
 export default {
   name: 'ArticleComment',
@@ -56,8 +67,11 @@ export default {
       required: true
     }
   },
+  components: { commentReply },
   data () {
     return {
+      currComment: {}, // 当前评论
+      isReplyShow: false, // 是否显示评论回复弹层
       content: '',
       offset: null, // 获取评论数据的偏移量，值为评论id，表示从此id的数据向后取，不传表示从第一页开始读取数据
       list: [], // 评论列表
@@ -68,8 +82,9 @@ export default {
 
   methods: {
     // 回复评论
-    hReply () {
-
+    hReply (item) {
+      this.isReplyShow = true
+      this.currComment = item
     },
     async hSwitchLike (item) {
       try {
