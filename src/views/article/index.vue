@@ -10,32 +10,32 @@
     <!-- /导航栏 -->
 
     <!-- 加载中 loading -->
-    <van-loading class="article-loading" />
+    <van-loading v-if="loading" class="article-loading" />
     <!-- /加载中 loading -->
 
     <!-- 文章详情 -->
-    <div class="detail">
-      <h3 class="title">标题</h3>
+    <div class="detail" v-else>
+      <h3 class="title">{{article.title}}</h3>
       <div class="author">
         <van-image round width="1rem" height="1rem" fit="fill" />
         <div class="text">
-          <p class="name">作者</p>
-          <p class="time">4天前</p>
+          <p class="name">{{article.aut_name}}</p>
+          <p class="time">{{article.pubdate|relativeTime}}</p>
         </div>
         <van-button
           round
           size="small"
           type="info"
-        >+ 关注</van-button>
+          @click="hSwitchFollow"
+        >{{article.is_followed?'取消关注':'+ 关注'}}</van-button>
       </div>
-      <div class="content">
-        <div>正文</div>
+      <div class="content" v-html="article.content">
       </div>
       <van-divider>END</van-divider>
       <div class="zan">
-        <van-button round size="small" hairline type="primary" plain icon="good-job-o">点赞</van-button>
+        <van-button round size="small" hairline type="primary" plain @click="hSwitchLike" :icon="article.attitude === 1?'good-job':'good-job-o'">{{article.attitude === 1?'取消点赞':'点赞'}}</van-button>
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <van-button round size="small" hairline type="danger" plain icon="delete">不喜欢</van-button>
+        <van-button round size="small" hairline type="danger" plain @click="hSwitchDisLike" icon="delete">{{article.attitude === 0?'取消不喜欢':'不喜欢'}}</van-button>
       </div>
     </div>
     <!-- /文章详情 -->
@@ -44,6 +44,8 @@
 </template>
 
 <script>
+import { getArticleInfo, addLike, deleteLike, addDisLike, deleteDisLike } from '@/api/article'
+import { followUser, unFollowUser } from '@/api/user'
 export default {
   name: 'ArticleIndex',
   data () {
@@ -51,6 +53,76 @@ export default {
       loading: true, // 控制加载中的 loading 状态
       article: { }
     }
+  },
+  methods: {
+    // 关注/取消关注
+    async hSwitchFollow () {
+      try {
+        if (this.article.is_followed) {
+          // 取消关注
+          await unFollowUser(this.article.aut_id)
+        } else {
+          // 添加关注
+          await followUser(this.article.aut_id)
+        }
+        this.$toast.success('操作成功')
+        // 更新视图
+        this.article.is_followed = !this.article.is_followed
+      } catch (error) {
+        console.log(error)
+        this.$toast.success('操作失败')
+      }
+    },
+    // 点赞/取消点赞
+    async hSwitchLike () {
+      try {
+        if (this.article.attitude === 1) {
+          // 取消点赞
+          await deleteLike(this.article.art_id)
+          this.article.attitude = -1
+        } else {
+          // 点赞
+          await addLike(this.article.art_id)
+          this.article.attitude = 1
+        }
+        this.$toast.success('操作成功')
+        // 更新视图
+      } catch (error) {
+        console.log(error)
+        this.$toast.success('操作失败')
+      }
+    },
+    // 不喜欢/取消不喜欢
+    async hSwitchDisLike () {
+      try {
+        if (this.article.attitude === 0) {
+          // 取消不喜欢
+          await deleteDisLike(this.article.art_id)
+          this.article.attitude = -1
+        } else {
+          // 不喜欢
+          await addDisLike(this.article.art_id)
+          this.article.attitude = 0
+        }
+        this.$toast.success('操作成功')
+        // 更新视图
+      } catch (error) {
+        console.log(error)
+        this.$toast.success('操作失败')
+      }
+    },
+    async loadArticle () {
+      try {
+        const result = await getArticleInfo(this.$route.params.id)
+        this.article = result.data.data
+        this.loading = false
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  },
+  created () {
+    this.loadArticle()
   }
 }
 </script>

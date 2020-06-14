@@ -24,3 +24,24 @@ export const userGetInfo = () => {
     url: '/app/v1_0/user/profile'
   })
 }
+
+/**
+ * 关注用户
+ * @param {integer} target 关注目标（被关注的用户id）
+ */
+export const followUser = target => ajax({
+  method: 'POST',
+  url: '/app/v1_0/user/followings',
+  data: {
+    target
+  }
+})
+
+/**
+ * 取消关注用户
+ * @param {integer} target 关注目标（被关注的用户id）
+ */
+export const unFollowUser = target => ajax({
+  method: 'DELETE',
+  url: '/app/v1_0/user/followings/' + target
+})

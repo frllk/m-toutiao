@@ -46,3 +46,54 @@ export const reportArticle = (articleId, type, remark = '') => ajax({
     remark
   }
 })
+
+/**
+ * 获取文章详情
+ * @param {*} articleId 文章编号
+ */
+export const getArticleInfo = articleId => ajax({
+  method: 'get',
+  url: '/app/v1_0/articles/' + articleId
+})
+
+/**
+ * 对文章点赞
+ * @param {*} articleId 文章编号
+ */
+export const addLike = target => ajax({
+  method: 'post',
+  url: '/app/v1_0/article/likings',
+  data: {
+    target
+  }
+})
+
+/**
+ * 取消对文章点赞
+ * @param {integer} target 文章id
+ */
+export const deleteLike = target => ajax({
+  method: 'delete',
+  url: '/app/v1_0/article/likings/' + target
+})
+
+/**
+ * 对文章不喜欢
+ * @param {*} articleId 文章编号
+ */
+export const addDisLike = target => ajax({
+  method: 'post',
+  url: '/app/v1_0/article/dislikes',
+  data: {
+    target
+  }
+})
+
+/**
+ * 取消对文章不喜欢
+ * @param {integer} target 文章id
+ */
+export const deleteDisLike = target => ajax({
+  method: 'delete',
+  url: '/app/v1_0/article/dislikes/' + target
+})
