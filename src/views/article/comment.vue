@@ -50,7 +50,7 @@
       position="bottom"
       :style="{height:'85%'}"
     >
-      <comment-reply :comment="currComment" :articleId="articleId"></comment-reply>
+      <comment-reply @close="hClose" :comment="currComment" :articleId="articleId"></comment-reply>
     </van-popup>
      <!-- 评论回复 -->
   </div>
@@ -81,6 +81,10 @@ export default {
   },
 
   methods: {
+    // 关闭弹层
+    hClose () {
+      this.isReplyShow = false
+    },
     // 回复评论
     hReply (item) {
       this.isReplyShow = true

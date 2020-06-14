@@ -2,7 +2,7 @@
 <div class="article-comments">
     <!-- 导航栏 -->
     <van-nav-bar :title="total_count+'条回复'">
-      <van-icon slot="left" name="cross" />
+      <van-icon slot="left" name="cross" @click="hClose" />
     </van-nav-bar>
     <!-- /导航栏 -->
 
@@ -96,6 +96,10 @@ export default {
   },
   props: ['comment', 'articleId'],
   methods: {
+    // 向父组件抛出事件，关闭弹层
+    hClose () {
+      this.$emit('close')
+    },
     // 添加评论回复
     async hAddCommentReply () {
       try {
