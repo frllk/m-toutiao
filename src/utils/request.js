@@ -7,7 +7,7 @@
 import store from '@/store/index.js'
 import axios from 'axios'
 import JSONBig from 'json-bigint'
-
+import router from '@/router/index.js'
 // 一个项目可能有多个基地址，所以用create方式创建axios实例
 const instance1 = axios.create({
   baseURL: 'http://ttapi.research.itcast.cn',
@@ -43,14 +43,50 @@ instance1.interceptors.request.use(function (config) {
   return Promise.reject(error)
 })
 
-// // Add a response interceptor
-// axios.interceptors.response.use(function (response) {
-//   // Do something with response data
-//   return response;
-// }, function (error) {
-//   // Do something with response error
-//   return Promise.reject(error);
-// });
+// 添加一个响应拦截器  ---  token过期处理
+instance1.interceptors.response.use(function (response) {
+  // Do something with response data
+  return response
+}, async function (error) {
+  // Do something with response error
+  // 判断状态码
+  // console.dir('interceptors.response===========', error)
+  if (error.response.status === 401) {
+    try {
+      const refreshToken = store.state.tokenInfo.refresh_token
+      // console.log('refreshToken===========', refreshToken)
+      if (refreshToken) {
+        // 有refresh_token,发送请求,重新获取有效期2小时的token,更新vuex
+        // 1.1 发送请求使用axios发送,不能使用instance1,instance1会自动添加token信息
+        const result = await axios({
+          method: 'PUT',
+          url: 'http://ttapi.research.itcast.cn/app/v1_0/authorizations',
+          headers: {
+            Authorization: `Bearer ${refreshToken}`
+          }
+        })
+        // 1.2 获取到新的token,更新vuex
+        const newToken = result.data.data.token
+        // console.log('newToken========', newToken)
+        store.commit('mUpdateToken', newToken)
+        // 1.3 重新发送请求
+        // console.log(error.config)
+        return instance1(error.config)
+      } else {
+        // 如果没有refresh_token,跳转到登录,登录成功跳转目标页
+        console.log('如果没有refresh_token,跳转到登录,登录成功跳转目标页')
+        // console.log('router', router.currentRoute)
+        router.push({ path: '/login', query: { backto: router.currentRoute.fullPath } })
+      }
+    } catch (error) {
+      // refresh_token失效,直接跳转登录
+      console.log('catch=============')
+      router.push({ path: '/login', query: { backto: router.currentRoute.fullPath } })
+    }
+  } else {
+    return Promise.reject(error)
+  }
+})
 
 // 按需导出
 export { instance1, instance2 }

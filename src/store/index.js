@@ -16,6 +16,10 @@ export default new Vuex.Store({
       state.tokenInfo = tokenObj
       // 把这个token信息做持久化
       setItem('tokenInfo', tokenObj)
+    },
+    mUpdateToken (state, newToken) {
+      console.log(newToken)
+      state.tokenInfo.token = newToken
     }
   }
 })
