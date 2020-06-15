@@ -50,7 +50,7 @@
       position="bottom"
       :style="{height:'85%'}"
     >
-      <comment-reply @close="hClose" :comment="currComment" :articleId="articleId"></comment-reply>
+      <comment-reply v-if="isReplyShow" @close="isReplyShow = false" :comment="currComment" :articleId="articleId"></comment-reply>
     </van-popup>
      <!-- 评论回复 -->
   </div>
@@ -81,10 +81,6 @@ export default {
   },
 
   methods: {
-    // 关闭弹层
-    hClose () {
-      this.isReplyShow = false
-    },
     // 回复评论
     hReply (item) {
       this.isReplyShow = true
@@ -117,6 +113,8 @@ export default {
           content: this.content
         })
         console.log(result)
+        // 处理添加评论之后无法点赞问题：返回数据没有这个字段
+        result.data.data.new_obj.is_liking = false
         this.list.unshift(result.data.data.new_obj)
         this.content = ''
       } catch (error) {
