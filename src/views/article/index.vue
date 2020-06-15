@@ -40,7 +40,7 @@
         <van-button round size="small" hairline type="danger" plain @click="hSwitchDisLike" icon="delete">{{article.attitude === 0?'取消不喜欢':'不喜欢'}}</van-button>
       </div>
       <!-- 文章回复 -->
-      <article-comment :articleId='$route.params.id'></article-comment>
+      <article-comment v-if="!is404" :articleId='$route.params.id'></article-comment>
       <!-- /文章回复 -->
     </div>
     <!-- /文章详情 -->
@@ -125,9 +125,16 @@ export default {
         this.loading = false
       } catch (error) {
         console.dir(error)
+        this.is404 = true
+        this.loading = false
+        if (!this.$store.state.tokenInfo || !this.$store.state.tokenInfo.token) {
+          this.$toast.fail('请先登录')
+        }
+        // if (err && err.response && err.response.status === 401) {
+        //   this.$toast.fail('请先登录')
+        // }
         if (error && error.response && error.response.status === 404) {
-          this.is404 = true
-          this.loading = false
+          this.$toast.fail('获取数据失败')
         }
       }
     }
