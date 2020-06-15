@@ -67,7 +67,9 @@ export default {
         this.$store.commit('mSetTokenInfo', res.data.data)
         // ---ajax结束之后，取消loading：用一个新的提示来覆盖之前的loading，这样相当于达到了loading的效果
         this.$toast.success('登录成功')
-        this.$router.push('/')
+        // 根据query参数, 登录成功跳转到目标页
+        const jumpto = this.$route.query.backto || '/'
+        this.$router.push(jumpto)
       } catch (err) {
         console.log(err)
         this.$toast.fail('登录失败')
