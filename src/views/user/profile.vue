@@ -11,9 +11,11 @@
           height="1.5rem"
           fit="cover"
           round
+          @click="hShowImage"
           :src="user.photo"
         />
       </van-cell>
+      <input type="file" hidden @change="hPhotoChange" ref="refPhoto" />
       <van-cell is-link title="名称" :value="user.name" @click="showName=true"/>
       <van-cell is-link title="性别" :value="user.gender === 1?'男':'女'" @click="showGender=true"/>
       <van-cell is-link title="生日" :value="user.birthday" @click="showBirthday=true"/>
@@ -57,7 +59,7 @@
 
 <script>
 import { formatDate } from '@/utils/date-time.js'
-import { userGetInfo, updateUserInfo } from '@/api/user.js'
+import { userGetInfo, updateUserInfo, updateUserPhoto } from '@/api/user.js'
 export default {
   name: 'userProfile',
   data () {
@@ -79,6 +81,36 @@ export default {
     }
   },
   methods: {
+    // 隐藏上传文件框,点击头像调用file标签的点击事件
+    hShowImage () {
+      this.$refs.refPhoto.click()
+    },
+    async hPhotoChange () {
+      try {
+        // 1. 获取用户选中的图片文件
+        //    this.$refs.refPhoto用来获取对input type="file"的引用
+        //    .files[0] :files是input的一个属性，用来保存用户选中的文件
+        //          [0] 表示集合中的第一项。
+        const files = this.$refs.refPhoto.files[0]
+        if (!files) {
+          return
+        }
+        // console.log(files)
+        // 2. 调用接口，上传
+        // 由于这里是上传文件，所以采用FormData对象来包装参数
+        const formData = new FormData()
+        formData.append('photo', files)
+        const result = await updateUserPhoto(formData)
+        // 3. 更新视图
+        this.user.photo = result.data.data.photo
+        // console.log(result)
+        this.$toast.success('修改用户头像成功')
+      } catch (error) {
+        console.log(updateUserPhoto)
+        console.log(error)
+        this.$toast('修改用户头像失败')
+      }
+    },
     beforeClose (action, done) {
       if (action === 'confirm') {
         if (!this.newName) {

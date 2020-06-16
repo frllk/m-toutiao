@@ -65,3 +65,14 @@ export const updateUserInfo = obj => ajax({
   url: '/app/v1_0/user/profile',
   data: obj
 })
+
+/**
+ * 编辑用户照片资料（头像、身份证照片）
+ * @param {*} data 修改对象
+ * photo  file  头像
+ */
+export const updateUserPhoto = data => ajax({
+  method: 'PATCH',
+  url: '/app/v1_0/user/photo',
+  data
+})
