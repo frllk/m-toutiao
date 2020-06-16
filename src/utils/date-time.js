@@ -7,8 +7,12 @@ import 'dayjs/locale/zh-cn'
 dayjs.extend(rTime)
 dayjs.locale('zh-cn') // 改变语言配置 (全局)
 
+/**
+ * 时间转换
+ * @param {*} val 时间
+*/
 export const formatDate = val => {
-  return dayjs(val).format('YYYY-MM-DD HH:mm:ss')
+  return dayjs(val).format('YYYY-MM-DD')
 }
 /**
  * 到现在的相对时间

@@ -40,10 +40,23 @@
       <van-cell is-link title="男" @click="hSaveGender(1)" />
       <van-cell is-link title="女" @click="hSaveGender(0)" />
     </van-popup>
+    <!-- 修改生日 -->
+    <van-popup v-model="showBirthday" position="bottom">
+      <van-nav-bar title="修改生日"></van-nav-bar>
+      <van-datetime-picker
+        @cancel="showBirthday=false"
+        @confirm="hSaveBirthday"
+        v-model="newDate"
+        type="date"
+        :min-date="minDate"
+        :max-date="maxDate"
+      />
+    </van-popup>
   </div>
 </template>
 
 <script>
+import { formatDate } from '@/utils/date-time.js'
 import { userGetInfo, updateUserInfo } from '@/api/user.js'
 export default {
   name: 'userProfile',
@@ -70,24 +83,38 @@ export default {
       if (action === 'confirm') {
         if (!this.newName) {
           this.$toast('用户名为空')
-        }
-        if (this.user.name === this.newName) {
+          done(false)
+        } else if (this.user.name === this.newName) {
           this.$toast('用户名与原用户名一致')
-        }
-        if (/^.{1,7}$/.test(this.newName) === false) {
+          done(false)
+        } else if (/^.{1,7}$/.test(this.newName) === false) {
           this.$toast('姓名长度在1-7之间,请重新输入')
+          done(false)
+        } else {
+          done()
         }
-        done(false)
       } else {
         done()
       }
     },
+    async hSaveBirthday () {
+      try {
+        const birthday = formatDate(this.newDate)
+        await updateUserInfo({
+          birthday
+        })
+        this.user.birthday = birthday
+        this.showBirthday = false
+      } catch (error) {
+        console.log(error)
+        this.$toast('修改生日失败')
+      }
+    },
     async hSaveGender (val) {
       try {
-        const result = await updateUserInfo({
+        await updateUserInfo({
           gender: val
         })
-        console.log(result)
         this.user.gender = val
         this.showGender = false
       } catch (error) {
@@ -100,15 +127,15 @@ export default {
         if (!this.newName || this.user.name === this.newName || /^.{1,7}$/.test(this.newName) === false) {
           return
         }
-        const result = await updateUserInfo({
+        await updateUserInfo({
           name: this.newName
         })
-        console.log(result)
         // 更新视图
         this.user.name = this.newName
       } catch (error) {
         console.dir(error)
         this.$toast.fail('修改姓名失败')
+        this.showName = false
       }
     },
     async loadUserInfo () {
