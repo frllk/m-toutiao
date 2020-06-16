@@ -3,24 +3,24 @@
     <!-- 用户个人资料 -->
     <div class="user-profile">
       <div class="info">
-        <van-image round src="https://img.yzcdn.cn/vant/cat.jpeg" />
+        <van-image round :src="user.photo" />
         <h3 class="name">
-          用户名
+          {{user.name}}
           <br />
           <van-tag size="mini">申请认证</van-tag>
         </h3>
       </div>
       <van-row>
         <van-col span="8">
-          <p>0</p>
+          <p>{{user.art_count}}</p>
           <p>动态</p>
         </van-col>
         <van-col span="8">
-          <p>0</p>
+          <p>{{user.follow_count}}</p>
           <p>关注</p>
         </van-col>
         <van-col span="8">
-          <p>0</p>
+          <p>{{user.fans_count}}</p>
           <p>粉丝</p>
         </van-col>
       </van-row>
@@ -44,18 +44,54 @@
       <van-cell icon="edit" title="编辑资料" to="/user/profile" is-link />
       <van-cell icon="chat-o" title="小智同学" to="/user/chat" is-link />
       <van-cell icon="setting-o" title="系统设置" is-link />
-      <van-cell icon="warning-o" title="退出登录" to="/login" is-link />
+      <van-cell icon="warning-o" title="退出登录" @click="hLoginOut" is-link />
     </van-cell-group>
   </div>
 </template>
 
 <script>
+import { getUserInfo } from '@/api/user'
+import { mapMutations } from 'vuex'
 export default {
   name: 'UserIndex',
   data () {
     return {
-
+      user: {}
     }
+  },
+  methods: {
+    ...mapMutations(['mSetUserPhoto', 'mClearToken']),
+    async loadUserInfo () {
+      try {
+        const result = await getUserInfo()
+        console.log(result)
+        this.user = result.data.data
+        this.mSetUserPhoto(this.user.photo)
+      } catch (error) {
+        console.log(error.message)
+        this.$toast.fail('获取用户信息失败')
+      }
+    },
+    hLoginOut () {
+      console.log(this.$router, this.$route)
+      this.$dialog.confirm({
+        title: '提示',
+        message: '你确定要退出吗？'
+      })
+        .then(() => {
+          // 1. 清除token信息
+          this.mClearToken()
+          // 2. 跳转到登录页---登录成功在返回当前页
+          this.$router.push({ path: '/login', query: { backto: this.$route.fullPath } })
+          // on confirm
+        })
+        .catch(() => {
+          // on cancel
+        })
+    }
+  },
+  created () {
+    this.loadUserInfo()
   }
 }
 </script>

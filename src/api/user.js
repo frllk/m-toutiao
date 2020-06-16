@@ -45,3 +45,11 @@ export const unFollowUser = target => ajax({
   method: 'DELETE',
   url: '/app/v1_0/user/followings/' + target
 })
+
+/**
+ * 获取用户自己的信息
+ */
+export const getUserInfo = () => ajax({
+  method: 'get',
+  url: '/app/v1_0/user'
+})
