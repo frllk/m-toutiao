@@ -19,7 +19,8 @@
       <van-cell is-link title="生日" :value="user.birthday" @click="showBirthday=true"/>
     </van-cell-group>
 
-    <!-- 编辑个人资料 -->
+    <!-- 修改姓名 -->
+    <!-- 关闭前的回调函数，调用 done() 后关闭弹窗，调用 done(false) 阻止弹窗关闭 (action, done) => void -->
     <van-dialog v-model="showName" :beforeClose="beforeClose" @confirm="hSaveName" title="修改姓名" show-cancel-button>
         <van-field
           v-model="newName"
@@ -27,6 +28,18 @@
           placeholder="请输入用户名"
         />
     </van-dialog>
+    <!-- 修改性别 -->
+    <van-popup v-model="showGender" position="bottom">
+      <van-nav-bar
+          title="修改性别"
+          left-text="取消"
+          @click-left="showGender=false"
+      >
+      </van-nav-bar>
+
+      <van-cell is-link title="男" @click="hSaveGender(1)" />
+      <van-cell is-link title="女" @click="hSaveGender(0)" />
+    </van-popup>
   </div>
 </template>
 
@@ -67,6 +80,19 @@ export default {
         done(false)
       } else {
         done()
+      }
+    },
+    async hSaveGender (val) {
+      try {
+        const result = await updateUserInfo({
+          gender: val
+        })
+        console.log(result)
+        this.user.gender = val
+        this.showGender = false
+      } catch (error) {
+        console.log(error)
+        this.$toast('修改性别失败')
       }
     },
     async hSaveName () {
