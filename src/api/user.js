@@ -53,3 +53,15 @@ export const getUserInfo = () => ajax({
   method: 'get',
   url: '/app/v1_0/user'
 })
+/**
+ * 修改用户信息
+ * @param {*} obj 参数对象
+ * name 昵称
+ * gender 性别，0-男，1-女
+ * birthday 生日，格式'2018-12-20'
+ */
+export const updateUserInfo = obj => ajax({
+  method: 'PATCH',
+  url: '/app/v1_0/user/profile',
+  data: obj
+})

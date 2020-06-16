@@ -18,10 +18,20 @@
       <van-cell is-link title="性别" :value="user.gender === 1?'男':'女'" @click="showGender=true"/>
       <van-cell is-link title="生日" :value="user.birthday" @click="showBirthday=true"/>
     </van-cell-group>
+
+    <!-- 编辑个人资料 -->
+    <van-dialog v-model="showName" :beforeClose="beforeClose" @confirm="hSaveName" title="修改姓名" show-cancel-button>
+        <van-field
+          v-model="newName"
+          right-icon="edit"
+          placeholder="请输入用户名"
+        />
+    </van-dialog>
   </div>
 </template>
 
 <script>
+import { userGetInfo, updateUserInfo } from '@/api/user.js'
 export default {
   name: 'userProfile',
   data () {
@@ -41,6 +51,53 @@ export default {
       minDate: new Date(1965, 0, 10), // dateTime-picker中最小时间
       maxDate: new Date() // 当前时间
     }
+  },
+  methods: {
+    beforeClose (action, done) {
+      if (action === 'confirm') {
+        if (!this.newName) {
+          this.$toast('用户名为空')
+        }
+        if (this.user.name === this.newName) {
+          this.$toast('用户名与原用户名一致')
+        }
+        if (/^.{1,7}$/.test(this.newName) === false) {
+          this.$toast('姓名长度在1-7之间,请重新输入')
+        }
+        done(false)
+      } else {
+        done()
+      }
+    },
+    async hSaveName () {
+      try {
+        if (!this.newName || this.user.name === this.newName || /^.{1,7}$/.test(this.newName) === false) {
+          return
+        }
+        const result = await updateUserInfo({
+          name: this.newName
+        })
+        console.log(result)
+        // 更新视图
+        this.user.name = this.newName
+      } catch (error) {
+        console.dir(error)
+        this.$toast.fail('修改姓名失败')
+      }
+    },
+    async loadUserInfo () {
+      try {
+        const result = await userGetInfo()
+        this.user = result.data.data
+        this.newName = this.user.name
+      } catch (error) {
+        console.log(error.message)
+        this.$toast.fail('获取数据失败')
+      }
+    }
+  },
+  created () {
+    this.loadUserInfo()
   }
 }
 </script>
