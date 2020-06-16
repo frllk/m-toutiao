@@ -5,6 +5,7 @@
       right-text="搜索"
       left-arrow
       fixed
+      v-show="$route.path != '/user'"
       @click-left="$router.push('/login')"
       @click-right="$router.push('/search')"
     />
