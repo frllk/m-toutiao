@@ -105,6 +105,7 @@ export default {
         this.user.photo = result.data.data.photo
         // console.log(result)
         this.$toast.success('修改用户头像成功')
+        this.$store.commit('mSetUserPhoto', this.user.photo)
       } catch (error) {
         console.log(updateUserPhoto)
         console.log(error)

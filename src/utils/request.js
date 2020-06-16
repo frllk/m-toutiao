@@ -10,6 +10,7 @@ import JSONBig from 'json-bigint'
 import router from '@/router/index.js'
 // 一个项目可能有多个基地址，所以用create方式创建axios实例
 const instance1 = axios.create({
+  // baseURL: 'http://api-toutiao-web.itheima.net',
   baseURL: 'http://ttapi.research.itcast.cn',
   // 处理请求返回的数据
   transformResponse: [function (data) {
